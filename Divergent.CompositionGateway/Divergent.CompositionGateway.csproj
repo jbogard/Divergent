@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
     <ProjectReference Include="..\shared-api-gateway\ITOps.ViewModelComposition.Gateway\ITOps.ViewModelComposition.Gateway.csproj" />
     <ProjectReference Include="..\Divergent.Customers.ViewModelComposition\Divergent.Customers.ViewModelComposition.csproj" />
     <ProjectReference Include="..\Divergent.Finance.ViewModelComposition\Divergent.Finance.ViewModelComposition.csproj" />

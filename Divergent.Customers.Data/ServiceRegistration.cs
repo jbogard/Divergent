@@ -9,7 +9,7 @@ namespace Divergent.Customers.Data;
 
 public class ServiceRegistration : IRegisterServices
 {
-    public void Register(HostBuilderContext context, IServiceCollection services)
+    public void Register(IHostApplicationBuilder context, IServiceCollection services)
     {
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)

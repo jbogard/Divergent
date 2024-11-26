@@ -1,13 +1,17 @@
-using Divergent.Frontend;
+var builder = WebApplication.CreateBuilder(args);
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureWebHostDefaults(webBuilder =>
-    {
-        webBuilder.UseStartup<Startup>();
-    }).Build();
+var app = builder.Build();
 
-var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+var hostEnvironment = app.Services.GetRequiredService<IHostEnvironment>();
 
 Console.Title = hostEnvironment.ApplicationName;
 
-host.Run();
+app.Run();

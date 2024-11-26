@@ -1,13 +1,29 @@
-﻿using Divergent.CompositionGateway;
+﻿using ITOps.ViewModelComposition;
+using ITOps.ViewModelComposition.Gateway;
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureWebHostDefaults(webBuilder =>
-    {
-        webBuilder.UseStartup<Startup>();
-    }).Build();
+var builder = WebApplication.CreateBuilder(args);
 
-var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
+builder.AddServiceDefaults();
+
+builder.Services.AddRouting();
+builder.Services.AddViewModelComposition();
+builder.Services.AddCors();
+
+var app = builder.Build();
+
+app.MapDefaultEndpoints();
+
+app.UseCors(policyBuilder =>
+{
+    policyBuilder.AllowAnyOrigin();
+    policyBuilder.AllowAnyMethod();
+    policyBuilder.AllowAnyHeader();
+});
+
+app.RunCompositionGatewayWithDefaultRoutes();
+
+var hostEnvironment = app.Services.GetRequiredService<IHostEnvironment>();
 
 Console.Title = hostEnvironment.ApplicationName;
 
-host.Run();
+app.Run();

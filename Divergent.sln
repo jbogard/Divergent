@@ -71,6 +71,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Divergent.Finance.ViewModel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITOps.SharedConfiguration", "shared-api-gateway\ITOps.SharedConfiguration\ITOps.SharedConfiguration.csproj", "{D54CA28C-A9EE-46EC-A409-868EFBEEFFF0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppHost", "AppHost\AppHost.csproj", "{F58B625B-9591-443C-97DA-99096D3DD473}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{C7ABEADA-FAB0-442F-9460-30CA2C2BE304}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +189,14 @@ Global
 		{D54CA28C-A9EE-46EC-A409-868EFBEEFFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D54CA28C-A9EE-46EC-A409-868EFBEEFFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D54CA28C-A9EE-46EC-A409-868EFBEEFFF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F58B625B-9591-443C-97DA-99096D3DD473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F58B625B-9591-443C-97DA-99096D3DD473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F58B625B-9591-443C-97DA-99096D3DD473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F58B625B-9591-443C-97DA-99096D3DD473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7ABEADA-FAB0-442F-9460-30CA2C2BE304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7ABEADA-FAB0-442F-9460-30CA2C2BE304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7ABEADA-FAB0-442F-9460-30CA2C2BE304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7ABEADA-FAB0-442F-9460-30CA2C2BE304}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,6 +5,6 @@ namespace Divergent.ITOps.Interfaces
 {
     public interface IRegisterServices
     {
-        void Register(HostBuilderContext context, IServiceCollection services);
+        void Register(IHostApplicationBuilder context, IServiceCollection services);
     }
 }

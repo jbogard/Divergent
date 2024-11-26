@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>18339055-3769-445a-ad6f-51b59904da69</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.0.0" />
+    <PackageReference Include="PracticalOtel.OtelCollector.Aspire" Version="0.9.6-rc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Divergent.CompositionGateway\Divergent.CompositionGateway.csproj" />
+    <ProjectReference Include="..\Divergent.Customers.API\Divergent.Customers.API.csproj" />
+    <ProjectReference Include="..\Divergent.Customers\Divergent.Customers.csproj" />
+    <ProjectReference Include="..\Divergent.Finance.API\Divergent.Finance.API.csproj" />
+    <ProjectReference Include="..\Divergent.Finance\Divergent.Finance.csproj" />
+    <ProjectReference Include="..\Divergent.Frontend\Divergent.Frontend.csproj" />
+    <ProjectReference Include="..\Divergent.ITOps\Divergent.ITOps.csproj" />
+    <ProjectReference Include="..\Divergent.Sales.API\Divergent.Sales.API.csproj" />
+    <ProjectReference Include="..\Divergent.Sales\Divergent.Sales.csproj" />
+    <ProjectReference Include="..\Divergent.Shipping\Divergent.Shipping.csproj" />
+    <ProjectReference Include="..\externalsystems\MastercardPaymentProvider\PaymentProviders.csproj" />
+  </ItemGroup>
+
+</Project>

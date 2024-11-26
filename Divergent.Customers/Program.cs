@@ -10,24 +10,21 @@ var configuration = new ConfigurationBuilder()
     .AddCommandLine(args)
     .Build();
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((builder, services) =>
-    {
-        services.Configure<LiteDbOptions>(configuration.GetSection("LiteDbOptions"))
+var builder = Host.CreateApplicationBuilder(args);
+
+builder.AddServiceDefaults();
+    
+builder.Services.Configure<LiteDbOptions>(configuration.GetSection("LiteDbOptions"))
             .Configure<LiteDbOptions>(s =>
             {
                 s.DatabaseName = "customers";
                 s.DatabaseInitializer = DatabaseInitializer.Initialize;
             });
-        services.AddSingleton<ILiteDbContext, LiteDbContext>();
-    })    
-    .UseNServiceBus(context =>
-    {
-        var endpoint = new EndpointConfiguration(EndpointName);
-        endpoint.Configure();
+builder.Services.AddSingleton<ILiteDbContext, LiteDbContext>();
+ 
+builder.ConfigureNServiceBus(EndpointName);
 
-        return endpoint;
-    }).Build();
+var host = builder.Build();
 
 var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
 

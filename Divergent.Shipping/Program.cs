@@ -1,24 +1,21 @@
 ﻿using Divergent.ITOps.Messages.Commands;
 using ITOps.EndpointConfig;
-using NServiceBus;
 
 const string EndpointName = "Divergent.Shipping";
 
-var host = Host.CreateDefaultBuilder(args)
-    .UseNServiceBus(context =>
-    {
-        var endpoint = new EndpointConfiguration(EndpointName);
+var builder = Host.CreateApplicationBuilder(args);
 
-        endpoint.Configure(routing =>
-        {
-            routing.RouteToEndpoint(typeof(ShipWithFedexCommand), "Divergent.ITOps");
-        });
+builder.ConfigureNServiceBus(EndpointName, routing =>
+{
+    routing.RouteToEndpoint(typeof(ShipWithFedexCommand), "Divergent.ITOps");
+});
 
-        return endpoint;
-    }).Build();
+builder.AddServiceDefaults();
 
-var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
+var app = builder.Build();
+
+var hostEnvironment = app.Services.GetRequiredService<IHostEnvironment>();
 
 Console.Title = hostEnvironment.ApplicationName;
 
-host.Run();
+app.Run();

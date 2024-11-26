@@ -1,20 +1,28 @@
 using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using NServiceBus;
 
 namespace ITOps.EndpointConfig
 {
     public static class EndpointConfigurationExtensions
     {
-        public static EndpointConfiguration Configure(
-            this EndpointConfiguration endpointConfiguration,
-            Action<RoutingSettings<LearningTransport>> configureRouting = null)
+        public static EndpointConfiguration ConfigureNServiceBus(
+            this IHostApplicationBuilder builder,
+            string endpointName,
+            Action<RoutingSettings<RabbitMQTransport>> configureRouting = null)
         {
+            var endpointConfiguration = new EndpointConfiguration(endpointName);
+            
             endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
             endpointConfiguration.Recoverability().Delayed(c => c.NumberOfRetries(0));
 
-            var transport = endpointConfiguration.UseTransport<LearningTransport>();
-
-            var routing = transport.Routing();
+            var transport = new RabbitMQTransport(
+                RoutingTopology.Conventional(QueueType.Quorum),
+                builder.Configuration.GetConnectionString("broker")
+            );
+            
+            var routing = endpointConfiguration.UseTransport(transport);
 
             endpointConfiguration.UsePersistence<LearningPersistence>();
 
@@ -30,8 +38,12 @@ namespace ITOps.EndpointConfig
                 t.Name.EndsWith("Event"));
 
             endpointConfiguration.EnableInstallers();
+            
+            endpointConfiguration.EnableOpenTelemetry();
 
             configureRouting?.Invoke(routing);
+            
+            builder.UseNServiceBus(endpointConfiguration);
 
             return endpointConfiguration;
         }

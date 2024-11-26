@@ -11,26 +11,21 @@ var configuration = new ConfigurationBuilder()
     .AddCommandLine(args)
     .Build();
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((builder, services) =>
-    {
-        services.AddSingleton<ReliablePaymentClient>();
+var builder = Host.CreateApplicationBuilder(args);
 
-        services.Configure<LiteDbOptions>(configuration.GetSection("LiteDbOptions"))
+builder.Services.AddSingleton<ReliablePaymentClient>();
+
+builder.Services.Configure<LiteDbOptions>(configuration.GetSection("LiteDbOptions"))
             .Configure<LiteDbOptions>(s =>
             {
                 s.DatabaseName = "finance";
                 s.DatabaseInitializer = DatabaseInitializer.Initialize;
             });
-        services.AddSingleton<ILiteDbContext, LiteDbContext>();
-    })
-    .UseNServiceBus(context =>
-    {
-        var endpoint = new EndpointConfiguration(EndpointName);
-        endpoint.Configure();
+builder.Services.AddSingleton<ILiteDbContext, LiteDbContext>();
+    
+builder.ConfigureNServiceBus(EndpointName);
 
-        return endpoint;
-    }).Build();
+var host = builder.Build();
 
 var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
 

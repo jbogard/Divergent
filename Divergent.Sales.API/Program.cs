@@ -1,38 +1,71 @@
-﻿using Divergent.Sales.API;
+﻿using Divergent.Sales.Data.Migrations;
 using Divergent.Sales.Messages.Commands;
-using NServiceBus;
+using ITOps.EndpointConfig;
 
-var host = Host.CreateDefaultBuilder(args)
-    .UseNServiceBus(_ =>
+var builder = WebApplication.CreateBuilder(args);
+
+var config = new EndpointConfiguration("Sales.API");
+
+config.SendOnly();
+
+var transport = new RabbitMQTransport(
+    RoutingTopology.Conventional(QueueType.Quorum),
+    builder.Configuration.GetConnectionString("broker")
+);
+
+var routing = config.UseTransport(transport);
+
+routing.RouteToEndpoint(typeof(SubmitOrderCommand), "Divergent.Sales");
+
+config.UseSerialization<NewtonsoftJsonSerializer>();
+config.UsePersistence<LearningPersistence>();
+
+config.SendFailedMessagesTo("error");
+
+config.Conventions()
+    .DefiningCommandsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Command"))
+    .DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Event"));
+
+builder.UseNServiceBus(config);
+
+builder.Services.AddControllers().AddNewtonsoftJson();
+
+builder.Services.Configure<LiteDbOptions>(builder.Configuration.GetSection("LiteDbOptions"))
+    .Configure<LiteDbOptions>(s =>
     {
-        var config = new EndpointConfiguration("Sales.API");
+        s.DatabaseName = "sales";
+        s.DatabaseInitializer = DatabaseInitializer.Initialize;
+    });
+builder.Services.AddSingleton<ILiteDbContext, LiteDbContext>();
 
-        config.SendOnly();
+builder.Services.AddCors();
 
-        var transport = config.UseTransport<LearningTransport>();
+builder.AddServiceDefaults();
 
-        var routing = transport.Routing();
+var app = builder.Build();
 
-        routing.RouteToEndpoint(typeof(SubmitOrderCommand), "Divergent.Sales");
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
-        config.UseSerialization<NewtonsoftJsonSerializer>();
-        config.UsePersistence<LearningPersistence>();
+app.UseCors(policyBuilder =>
+{
+    policyBuilder.AllowAnyOrigin();
+    policyBuilder.AllowAnyMethod();
+    policyBuilder.AllowAnyHeader();
+});
 
-        config.SendFailedMessagesTo("error");
+app.MapDefaultEndpoints();
 
-        config.Conventions()
-            .DefiningCommandsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Command"))
-            .DefiningEventsAs(t => t.Namespace != null && t.Namespace == "Divergent.Messages" || t.Name.EndsWith("Event"));
+app.UseRouting();
 
-        return config;
-    })
-    .ConfigureWebHostDefaults(webBuilder =>
-    {
-        webBuilder.UseStartup<Startup>();
-    }).Build();
+app.UseAuthorization();
 
-var hostEnvironment = host.Services.GetRequiredService<IHostEnvironment>();
+app.MapControllers();
+
+var hostEnvironment = app.Services.GetRequiredService<IHostEnvironment>();
 
 Console.Title = hostEnvironment.ApplicationName;
 
-host.Run();
+app.Run();
